@@ -61,6 +61,30 @@
             text-align: center;
         }
 
+        .role-selection {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .role-btn.active {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
         .admin-section {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -104,6 +128,17 @@
         .tab-btn.active {
             background: linear-gradient(135deg, #4299e1, #667eea);
             transform: translateY(-2px);
+        }
+
+        .tab-btn.disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .tab-btn.disabled:hover {
+            transform: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .tab-content {
@@ -384,12 +419,24 @@
             margin-top: 5px;
         }
 
-        .admin-panel {
-            background: #fff3cd;
-            border: 2px solid #ffeaa7;
+        .user-info {
+            background: linear-gradient(135deg, #4299e1, #667eea);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .read-only-notice {
+            background: #e6fffa;
+            border: 2px solid #81e6d9;
             border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #234e52;
+            text-align: center;
+            font-weight: 600;
         }
 
         @media (max-width: 768px) {
@@ -415,6 +462,10 @@
                 margin: 10px auto;
                 display: block;
             }
+
+            .role-selection {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -422,7 +473,18 @@
     <!-- Login Section -->
     <div id="loginSection" class="login-section">
         <div class="logo">FAMBIH BD</div>
-        <h2 style="margin-bottom: 20px; color: #4a5568;">Manager Login</h2>
+        <h2 style="margin-bottom: 20px; color: #4a5568;">Login to System</h2>
+        
+        <!-- Role Selection -->
+        <div class="role-selection">
+            <div class="role-btn active" onclick="selectRole('user')">
+                👤 User<br><small style="opacity: 0.8;">View Only</small>
+            </div>
+            <div class="role-btn" onclick="selectRole('manager')">
+                👨‍💼 Manager<br><small style="opacity: 0.8;">Full Access</small>
+            </div>
+        </div>
+        
         <div class="form-group">
             <label for="username">Username:</label>
             <input type="text" id="username" placeholder="Enter username">
@@ -438,6 +500,12 @@
                 🔧 Admin Settings
             </button>
         </div>
+        
+        <div style="margin-top: 20px; padding: 15px; background: #f7fafc; border-radius: 8px; text-align: left; font-size: 0.9rem; color: #4a5568;">
+            <strong>Default Credentials:</strong><br>
+            👤 User: user / user123<br>
+            👨‍💼 Manager: Mahfuz_2217 / assdi2207
+        </div>
     </div>
 
     <!-- Admin Panel -->
@@ -451,7 +519,15 @@
         <button class="btn btn-warning" onclick="verifyAdmin()">Verify Admin</button>
         
         <div id="adminControls" style="display: none; margin-top: 30px; padding-top: 20px; border-top: 2px solid #e2e8f0;">
-            <h3 style="margin-bottom: 20px; color: #4a5568;">Change Manager Credentials</h3>
+            <h3 style="margin-bottom: 20px; color: #4a5568;">Change Credentials</h3>
+            
+            <div class="form-group">
+                <label for="credentialType">Change Credentials For:</label>
+                <select id="credentialType">
+                    <option value="manager">Manager</option>
+                    <option value="user">User</option>
+                </select>
+            </div>
             
             <div class="form-group">
                 <label for="newUsername">New Username:</label>
@@ -478,16 +554,19 @@
     <div id="mainApp" class="main-app">
         <div class="container">
             <div class="header">
-                <button class="admin-btn" onclick="showAdminPanel()">🔧 Admin</button>
+                <button class="admin-btn" onclick="showAdminPanel()" id="adminBtnHeader">🔧 Admin</button>
                 <button class="logout-btn" onclick="logout()">Logout</button>
                 <div class="logo">FAMBIH BD</div>
                 <div class="subtitle">Inventory Management System</div>
-                <div style="color: #718096; font-size: 1rem;">
-                    Logged in as: <strong id="currentUsername"></strong>
+                <div class="user-info">
+                    <span id="currentUserRole">User</span>: <strong id="currentUsername"></strong>
+                </div>
+                <div id="readOnlyNotice" class="read-only-notice" style="display: none;">
+                    📋 You have read-only access. You can view data but cannot make changes.
                 </div>
                 <div class="nav-tabs">
                     <button class="tab-btn active" onclick="showTab('dashboard')">📊 Dashboard</button>
-                    <button class="tab-btn" onclick="showTab('inventory')">📦 Inventory</button>
+                    <button class="tab-btn" onclick="showTab('inventory')" id="inventoryTab">📦 Inventory</button>
                     <button class="tab-btn" onclick="showTab('history')">📋 History</button>
                     <button class="tab-btn" onclick="showTab('sales')">💰 Sales Today</button>
                     <button class="tab-btn" onclick="showTab('purchase')">🛒 Purchase Today</button>
@@ -548,7 +627,7 @@
             <div id="inventory" class="tab-content">
                 <h2>📦 Stock Entry & Management</h2>
                 
-                <div class="entry-form">
+                <div class="entry-form" id="entryForm">
                     <h3>Stock Transaction Entry</h3>
                     <div class="transaction-type">
                         <div class="type-btn active" onclick="setTransactionType('in')">
@@ -596,7 +675,7 @@
                     </div>
                 </div>
 
-                <div>
+                <div id="newProductForm">
                     <h3>Add New Product</h3>
                     <div class="form-row">
                         <div>
@@ -666,7 +745,7 @@
                 </div>
                 
                 <button class="btn btn-primary" onclick="filterTransactions()">Apply Filter</button>
-                <button class="btn" onclick="exportToGoogleSheetsFormat('transactions')">📊 Copy for Google Sheets</button>
+                <button class="btn" onclick="exportToGoogleSheetsFormat('transactions')" id="exportTransactionsBtn">📊 Copy for Google Sheets</button>
                 
                 <div class="table-container">
                     <table id="transactionTable">
@@ -706,7 +785,7 @@
                     </div>
                 </div>
 
-                <button class="btn" onclick="exportToGoogleSheetsFormat('sales')">📊 Copy Sales Data for Google Sheets</button>
+                <button class="btn" onclick="exportToGoogleSheetsFormat('sales')" id="exportSalesBtn">📊 Copy Sales Data for Google Sheets</button>
                 
                 <div class="table-container">
                     <table id="salesTable">
@@ -745,722 +824,6 @@
                     </div>
                 </div>
 
-                <button class="btn" onclick="exportToGoogleSheetsFormat('purchase')">📊 Copy Purchase Data for Google Sheets</button>
+                <button class="btn" onclick="exportToGoogleSheetsFormat('purchase')" id="exportPurchaseBtn">📊 Copy Purchase Data for Google Sheets</button>
                 
-                <div class="table-container">
-                    <table id="purchaseTable">
-                        <thead>
-                            <tr>
-                                <th>Time</th>
-                                <th>Product</th>
-                                <th>Quantity Received</th>
-                                <th>Unit Price</th>
-                                <th>Total Value</th>
-                                <th>Supplier</th>
-                                <th>Notes</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Application state
-        let currentUser = null;
-        let transactionType = 'in';
-        let managerCredentials = {
-            username: 'Mahfuz_2217',
-            password: 'assdi2207'
-        };
-        const adminPassword = 'cr7lm10njr';
-
-        let products = [
-            {id: 1, name: "Rice (1kg)", category: "Groceries", currentStock: 50, unitPrice: 65.00, lastUpdated: new Date(), minStock: 10},
-            {id: 2, name: "Coca Cola (500ml)", category: "Beverages", currentStock: 30, unitPrice: 25.00, lastUpdated: new Date(), minStock: 15},
-            {id: 3, name: "Bread", category: "Groceries", currentStock: 20, unitPrice: 35.00, lastUpdated: new Date(), minStock: 5},
-            {id: 4, name: "Shampoo (200ml)", category: "Personal Care", currentStock: 8, unitPrice: 120.00, lastUpdated: new Date(), minStock: 10},
-        ];
-        
-        let transactions = [];
-        let nextProductId = 5;
-
-        // Initialize the app
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set default date range
-            const today = new Date();
-            const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-            document.getElementById('dateFrom').value = oneWeekAgo.toISOString().split('T')[0];
-            document.getElementById('dateTo').value = today.toISOString().split('T')[0];
-            
-            updateProductOptions();
-        });
-
-        // Authentication functions
-        function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            if (username === managerCredentials.username && password === managerCredentials.password) {
-                currentUser = username;
-                document.getElementById('currentUsername').textContent = username;
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
-                initializeApp();
-                showAlert('Welcome to FAMBIH BD Management System!', 'success');
-            } else {
-                showAlert('Invalid username or password!', 'danger');
-            }
-        }
-
-        function logout() {
-            currentUser = null;
-            document.getElementById('loginSection').style.display = 'block';
-            document.getElementById('mainApp').style.display = 'none';
-            document.getElementById('adminPanel').style.display = 'none';
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-        }
-
-        function showAdminPanel() {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'none';
-            document.getElementById('adminPanel').style.display = 'block';
-            document.getElementById('adminPassword').value = '';
-            document.getElementById('adminControls').style.display = 'none';
-        }
-
-        function verifyAdmin() {
-            const enteredPassword = document.getElementById('adminPassword').value;
-            
-            if (enteredPassword === adminPassword) {
-                document.getElementById('adminControls').style.display = 'block';
-                document.getElementById('newUsername').value = managerCredentials.username;
-                showAlert('Admin access granted!', 'success');
-            } else {
-                showAlert('Invalid admin password!', 'danger');
-            }
-        }
-
-        function updateCredentials() {
-            const newUsername = document.getElementById('newUsername').value;
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-
-            if (!newUsername || !newPassword) {
-                showAlert('Please fill in all fields!', 'danger');
-                return;
-            }
-
-            if (newPassword !== confirmPassword) {
-                showAlert('Passwords do not match!', 'danger');
-                return;
-            }
-
-            managerCredentials.username = newUsername;
-            managerCredentials.password = newPassword;
-            
-            showAlert('Manager credentials updated successfully!', 'success');
-            
-            // Clear form
-            document.getElementById('newUsername').value = '';
-            document.getElementById('newPassword').value = '';
-            document.getElementById('confirmPassword').value = '';
-            document.getElementById('adminPassword').value = '';
-            document.getElementById('adminControls').style.display = 'none';
-        }
-
-        function backToLogin() {
-            document.getElementById('loginSection').style.display = 'block';
-            document.getElementById('adminPanel').style.display = 'none';
-        }
-
-        // Initialize application
-        function initializeApp() {
-            updateProductOptions();
-            updateDashboard();
-            updateStockTable();
-            updateTransactionTable();
-            updateSalesTable();
-            updatePurchaseTable();
-        }
-
-        // Tab functionality
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-            
-            // Update content based on tab
-            if (tabName === 'dashboard') {
-                updateDashboard();
-            } else if (tabName === 'inventory') {
-                updateStockTable();
-            } else if (tabName === 'history') {
-                updateTransactionTable();
-            } else if (tabName === 'sales') {
-                updateSalesTable();
-            } else if (tabName === 'purchase') {
-                updatePurchaseTable();
-            }
-        }
-
-        // Transaction type selection
-        function setTransactionType(type) {
-            transactionType = type;
-            document.querySelectorAll('.type-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            const btnText = type === 'in' ? 'Record Stock IN' : 'Record Stock OUT';
-            const labelText = type === 'in' ? 'Supplier:' : 'Customer:';
-            
-            document.getElementById('entryBtnText').textContent = btnText;
-            document.getElementById('supplierLabel').textContent = labelText;
-        }
-
-        // Product management
-        function updateProductOptions() {
-            const select = document.getElementById('entryProduct');
-            select.innerHTML = '<option value="">Choose a product...</option>';
-            
-            products.forEach(product => {
-                const option = document.createElement('option');
-                option.value = product.id;
-                option.textContent = `${product.name} (Stock: ${product.currentStock})`;
-                select.appendChild(option);
-            });
-        }
-
-        function loadProductDetails() {
-            const productId = parseInt(document.getElementById('entryProduct').value);
-            const product = products.find(p => p.id === productId);
-            
-            if (product) {
-                document.getElementById('entryPrice').value = product.unitPrice;
-                document.getElementById('currentStockInfo').textContent = 
-                    `Current Stock: ${product.currentStock} units`;
-            } else {
-                document.getElementById('currentStockInfo').textContent = '';
-            }
-        }
-
-        function addNewProduct() {
-            const name = document.getElementById('newProductName').value;
-            const category = document.getElementById('newProductCategory').value;
-            const price = parseFloat(document.getElementById('newProductPrice').value);
-
-            if (!name || !price) {
-                showAlert('Please fill in product name and price!', 'danger');
-                return;
-            }
-
-            const newProduct = {
-                id: nextProductId++,
-                name: name,
-                category: category,
-                currentStock: 0,
-                unitPrice: price,
-                lastUpdated: new Date(),
-                minStock: 5
-            };
-
-            products.push(newProduct);
-            updateProductOptions();
-            updateStockTable();
-            
-            // Clear form
-            document.getElementById('newProductName').value = '';
-            document.getElementById('newProductPrice').value = '';
-            
-            showAlert('New product added successfully!', 'success');
-        }
-
-        // Transaction management
-        function addTransaction() {
-            const productId = parseInt(document.getElementById('entryProduct').value);
-            const quantity = parseInt(document.getElementById('entryQuantity').value);
-            const price = parseFloat(document.getElementById('entryPrice').value);
-            const supplier = document.getElementById('entrySupplier').value;
-            const notes = document.getElementById('entryNotes').value;
-
-            if (!productId || !quantity || !price) {
-                showAlert('Please fill in all required fields!', 'danger');
-                return;
-            }
-
-            const product = products.find(p => p.id === productId);
-            
-            // Check if stock OUT is possible
-            if (transactionType === 'out' && quantity > product.currentStock) {
-                showAlert(`Not enough stock! Available: ${product.currentStock}`, 'danger');
-                return;
-            }
-
-            // Create transaction record
-            const transaction = {
-                id: Date.now(),
-                date: new Date(),
-                type: transactionType,
-                productId: productId,
-                productName: product.name,
-                category: product.category,
-                quantity: quantity,
-                unitPrice: price,
-                totalValue: quantity * price,
-                supplier: supplier,
-                notes: notes
-            };
-
-            transactions.push(transaction);
-
-            // Update product stock
-            if (transactionType === 'in') {
-                product.currentStock += quantity;
-            } else {
-                product.currentStock -= quantity;
-            }
-            
-            product.lastUpdated = new Date();
-            product.unitPrice = price; // Update price
-
-            // Clear form
-            clearEntryForm();
-            updateProductOptions();
-            updateDashboard();
-            updateStockTable();
-            
-            const typeText = transactionType === 'in' ? 'Stock IN' : 'Stock OUT';
-            showAlert(`${typeText} recorded successfully!`, 'success');
-        }
-
-        function clearEntryForm() {
-            document.getElementById('entryProduct').value = '';
-            document.getElementById('entryQuantity').value = '';
-            document.getElementById('entryPrice').value = '';
-            document.getElementById('entrySupplier').value = '';
-            document.getElementById('entryNotes').value = '';
-            document.getElementById('currentStockInfo').textContent = '';
-        }
-
-        // Dashboard updates
-        function updateDashboard() {
-            // Calculate totals
-            const totalProducts = products.length;
-            const totalStockValue = products.reduce((sum, p) => sum + (p.currentStock * p.unitPrice), 0);
-            const lowStockProducts = products.filter(p => p.currentStock <= p.minStock);
-            
-            // Today's transactions
-            const today = new Date().toDateString();
-            const todayTransactions = transactions.filter(t => t.date.toDateString() === today);
-            const todayIn = todayTransactions.filter(t => t.type === 'in');
-            const todayOut = todayTransactions.filter(t => t.type === 'out');
-            
-            const todayInValue = todayIn.reduce((sum, t) => sum + t.totalValue, 0);
-            const todayOutValue = todayOut.reduce((sum, t) => sum + t.totalValue, 0);
-
-            // Update stats
-            document.getElementById('totalProducts').textContent = totalProducts;
-            document.getElementById('totalStockValue').textContent = `৳${totalStockValue.toFixed(2)}`;
-            document.getElementById('todayInValue').textContent = `৳${todayInValue.toFixed(2)}`;
-            document.getElementById('todayOutValue').textContent = `৳${todayOutValue.toFixed(2)}`;
-            document.getElementById('todayInCount').textContent = todayIn.length;
-            document.getElementById('todayOutCount').textContent = todayOut.length;
-            document.getElementById('lowStockCount').textContent = lowStockProducts.length;
-
-            // Update low stock alerts
-            const lowStockList = document.getElementById('lowStockList');
-            if (lowStockProducts.length === 0) {
-                lowStockList.innerHTML = '<p style="color: #48bb78;">✅ All products have sufficient stock</p>';
-            } else {
-                lowStockList.innerHTML = lowStockProducts.map(product => 
-                    `<div style="background: white; padding: 10px; border-radius: 5px; margin-bottom: 10px; border-left: 4px solid #e53e3e;">
-                        <strong>${product.name}</strong><br>
-                        <span class="low-stock">Stock: ${product.currentStock} (Min: ${product.minStock})</span>
-                    </div>`
-                ).join('');
-            }
-
-            // Update recent activity
-            const recentActivity = document.getElementById('recentActivity');
-            const recentTransactions = transactions.slice(-5).reverse();
-            
-            if (recentTransactions.length === 0) {
-                recentActivity.innerHTML = '<p style="color: #718096;">No recent transactions</p>';
-            } else {
-                recentActivity.innerHTML = recentTransactions.map(transaction => 
-                    `<div style="background: white; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                        <strong>${transaction.productName}</strong><br>
-                        <span style="color: ${transaction.type === 'in' ? '#48bb78' : '#f56565'};">
-                            ${transaction.type === 'in' ? '📦 IN' : '📤 OUT'}: ${transaction.quantity} units
-                        </span><br>
-                        <small style="color: #718096;">${transaction.date.toLocaleString()}</small>
-                    </div>`
-                ).join('');
-            }
-        }
-
-        // Stock table update
-        function updateStockTable() {
-            const tbody = document.querySelector('#stockTable tbody');
-            tbody.innerHTML = '';
-
-            products.forEach(product => {
-                const row = document.createElement('tr');
-                const isLowStock = product.currentStock <= product.minStock;
-                const totalValue = product.currentStock * product.unitPrice;
-                
-                row.innerHTML = `
-                    <td><strong>${product.name}</strong></td>
-                    <td>${product.category}</td>
-                    <td class="${isLowStock ? 'low-stock' : ''}">${product.currentStock}</td>
-                    <td>৳${product.unitPrice.toFixed(2)}</td>
-                    <td>৳${totalValue.toFixed(2)}</td>
-                    <td>${isLowStock ? '<span class="low-stock">⚠️ Low Stock</span>' : '✅ In Stock'}</td>
-                    <td>${product.lastUpdated.toLocaleDateString()}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        // Transaction table update
-        function updateTransactionTable() {
-            const tbody = document.querySelector('#transactionTable tbody');
-            tbody.innerHTML = '';
-
-            const filteredTransactions = getFilteredTransactions();
-            
-            filteredTransactions.reverse().forEach(transaction => {
-                const row = document.createElement('tr');
-                const typeColor = transaction.type === 'in' ? '#48bb78' : '#f56565';
-                const typeIcon = transaction.type === 'in' ? '📦' : '📤';
-                
-                row.innerHTML = `
-                    <td>${transaction.date.toLocaleString()}</td>
-                    <td style="color: ${typeColor}; font-weight: bold;">${typeIcon} ${transaction.type.toUpperCase()}</td>
-                    <td><strong>${transaction.productName}</strong></td>
-                    <td>${transaction.quantity}</td>
-                    <td>৳${transaction.unitPrice.toFixed(2)}</td>
-                    <td>৳${transaction.totalValue.toFixed(2)}</td>
-                    <td>${transaction.supplier || '-'}</td>
-                    <td>${transaction.notes || '-'}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        // Sales table update (today's sales)
-        function updateSalesTable() {
-            const today = new Date().toDateString();
-            const todaySales = transactions.filter(t => t.type === 'out' && t.date.toDateString() === today);
-            
-            // Update stats
-            const salesCount = todaySales.length;
-            const salesQuantity = todaySales.reduce((sum, t) => sum + t.quantity, 0);
-            const salesValue = todaySales.reduce((sum, t) => sum + t.totalValue, 0);
-            
-            document.getElementById('todaySalesCount').textContent = salesCount;
-            document.getElementById('todaySalesQuantity').textContent = salesQuantity;
-            document.getElementById('todaySalesValue').textContent = `৳${salesValue.toFixed(2)}`;
-            
-            // Update table
-            const tbody = document.querySelector('#salesTable tbody');
-            tbody.innerHTML = '';
-            
-            if (todaySales.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #718096;">No sales recorded today</td></tr>';
-                return;
-            }
-
-            todaySales.reverse().forEach(sale => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${sale.date.toLocaleTimeString()}</td>
-                    <td><strong>${sale.productName}</strong></td>
-                    <td>${sale.quantity}</td>
-                    <td>৳${sale.unitPrice.toFixed(2)}</td>
-                    <td>৳${sale.totalValue.toFixed(2)}</td>
-                    <td>${sale.supplier || '-'}</td>
-                    <td>${sale.notes || '-'}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        // Purchase table update (today's purchases)
-        function updatePurchaseTable() {
-            const today = new Date().toDateString();
-            const todayPurchases = transactions.filter(t => t.type === 'in' && t.date.toDateString() === today);
-            
-            // Update stats
-            const purchaseCount = todayPurchases.length;
-            const purchaseQuantity = todayPurchases.reduce((sum, t) => sum + t.quantity, 0);
-            const purchaseValue = todayPurchases.reduce((sum, t) => sum + t.totalValue, 0);
-            
-            document.getElementById('todayPurchaseCount').textContent = purchaseCount;
-            document.getElementById('todayPurchaseQuantity').textContent = purchaseQuantity;
-            document.getElementById('todayPurchaseValue').textContent = `৳${purchaseValue.toFixed(2)}`;
-            
-            // Update table
-            const tbody = document.querySelector('#purchaseTable tbody');
-            tbody.innerHTML = '';
-            
-            if (todayPurchases.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #718096;">No purchases recorded today</td></tr>';
-                return;
-            }
-
-            todayPurchases.reverse().forEach(purchase => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${purchase.date.toLocaleTimeString()}</td>
-                    <td><strong>${purchase.productName}</strong></td>
-                    <td>${purchase.quantity}</td>
-                    <td>৳${purchase.unitPrice.toFixed(2)}</td>
-                    <td>৳${purchase.totalValue.toFixed(2)}</td>
-                    <td>${purchase.supplier || '-'}</td>
-                    <td>${purchase.notes || '-'}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        // Filter functions
-        function getFilteredTransactions() {
-            const fromDate = new Date(document.getElementById('dateFrom').value || '2020-01-01');
-            const toDate = new Date(document.getElementById('dateTo').value || '2030-12-31');
-            toDate.setHours(23, 59, 59, 999); // Include entire day
-            
-            const typeFilter = document.getElementById('typeFilter').value;
-            
-            return transactions.filter(transaction => {
-                const transactionDate = new Date(transaction.date);
-                const dateMatch = transactionDate >= fromDate && transactionDate <= toDate;
-                const typeMatch = !typeFilter || transaction.type === typeFilter;
-                return dateMatch && typeMatch;
-            });
-        }
-
-        function filterTransactions() {
-            updateTransactionTable();
-        }
-
-        // Google Sheets Export Functions
-        function exportToGoogleSheetsFormat(type) {
-            let csvContent = '';
-            let filename = '';
-            
-            if (type === 'inventory') {
-                csvContent = 'Product Name\tCategory\tCurrent Stock\tUnit Price\tTotal Value\tStatus\tLast Updated\n';
-                products.forEach(product => {
-                    const totalValue = product.currentStock * product.unitPrice;
-                    const status = product.currentStock <= product.minStock ? 'Low Stock' : 'In Stock';
-                    csvContent += `${product.name}\t${product.category}\t${product.currentStock}\t${product.unitPrice.toFixed(2)}\t${totalValue.toFixed(2)}\t${status}\t${product.lastUpdated.toLocaleDateString()}\n`;
-                });
-                filename = 'FAMBIH_BD_Inventory';
-                
-            } else if (type === 'transactions') {
-                csvContent = 'Date & Time\tType\tProduct\tQuantity\tUnit Price\tTotal Value\tSupplier/Customer\tNotes\n';
-                getFilteredTransactions().forEach(transaction => {
-                    csvContent += `${transaction.date.toLocaleString()}\t${transaction.type.toUpperCase()}\t${transaction.productName}\t${transaction.quantity}\t${transaction.unitPrice.toFixed(2)}\t${transaction.totalValue.toFixed(2)}\t${transaction.supplier || ''}\t${transaction.notes || ''}\n`;
-                });
-                filename = 'FAMBIH_BD_Transactions';
-                
-            } else if (type === 'sales') {
-                const today = new Date().toDateString();
-                const todaySales = transactions.filter(t => t.type === 'out' && t.date.toDateString() === today);
-                
-                csvContent = 'Time\tProduct\tQuantity Sold\tUnit Price\tTotal Value\tCustomer\tNotes\n';
-                todaySales.forEach(sale => {
-                    csvContent += `${sale.date.toLocaleTimeString()}\t${sale.productName}\t${sale.quantity}\t${sale.unitPrice.toFixed(2)}\t${sale.totalValue.toFixed(2)}\t${sale.supplier || ''}\t${sale.notes || ''}\n`;
-                });
-                filename = `FAMBIH_BD_Sales_${new Date().toLocaleDateString().replace(/\//g, '-')}`;
-                
-            } else if (type === 'purchase') {
-                const today = new Date().toDateString();
-                const todayPurchases = transactions.filter(t => t.type === 'in' && t.date.toDateString() === today);
-                
-                csvContent = 'Time\tProduct\tQuantity Received\tUnit Price\tTotal Value\tSupplier\tNotes\n';
-                todayPurchases.forEach(purchase => {
-                    csvContent += `${purchase.date.toLocaleTimeString()}\t${purchase.productName}\t${purchase.quantity}\t${purchase.unitPrice.toFixed(2)}\t${purchase.totalValue.toFixed(2)}\t${purchase.supplier || ''}\t${purchase.notes || ''}\n`;
-                });
-                filename = `FAMBIH_BD_Purchases_${new Date().toLocaleDateString().replace(/\//g, '-')}`;
-            }
-            
-            // Copy to clipboard
-            navigator.clipboard.writeText(csvContent).then(() => {
-                showAlert('Data copied to clipboard! You can now paste it in Google Sheets.', 'success');
-            }).catch(() => {
-                // Fallback: show data in a textarea for manual copying
-                const popup = document.createElement('div');
-                popup.style.cssText = `
-                    position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    background: white;
-                    padding: 20px;
-                    border-radius: 10px;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-                    z-index: 2000;
-                    max-width: 80%;
-                    max-height: 80%;
-                `;
-                
-                popup.innerHTML = `
-                    <h3>Copy this data to Google Sheets:</h3>
-                    <textarea readonly style="width: 100%; height: 300px; margin: 10px 0;">${csvContent}</textarea>
-                    <button onclick="this.parentElement.remove()" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px;">Close</button>
-                `;
-                
-                document.body.appendChild(popup);
-            });
-        }
-
-        // Utility functions
-        function showAlert(message, type) {
-            // Remove existing alerts
-            document.querySelectorAll('.alert').forEach(alert => alert.remove());
-            
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type}`;
-            alert.textContent = message;
-            
-            document.body.appendChild(alert);
-            
-            // Show alert
-            setTimeout(() => alert.classList.add('show'), 100);
-            
-            // Hide alert after 4 seconds
-            setTimeout(() => {
-                alert.classList.remove('show');
-                setTimeout(() => alert.remove(), 300);
-            }, 4000);
-        }
-
-        // Initialize data for demo
-        function addSampleTransactions() {
-            const today = new Date();
-            
-            // Add some sample transactions for today
-            const sampleTransactions = [
-                {
-                    productId: 1,
-                    type: 'in',
-                    quantity: 20,
-                    price: 65.00,
-                    supplier: 'Local Farm',
-                    notes: 'Weekly stock'
-                },
-                {
-                    productId: 2,
-                    type: 'out',
-                    quantity: 5,
-                    price: 25.00,
-                    supplier: 'Customer A',
-                    notes: 'Regular sale'
-                },
-                {
-                    productId: 3,
-                    type: 'out',
-                    quantity: 3,
-                    price: 35.00,
-                    supplier: 'Customer B',
-                    notes: 'Morning sale'
-                }
-            ];
-            
-            sampleTransactions.forEach(sample => {
-                const product = products.find(p => p.id === sample.productId);
-                const transaction = {
-                    id: Date.now() + Math.random(),
-                    date: new Date(today.getTime() - Math.random() * 24 * 60 * 60 * 1000), // Random time today
-                    type: sample.type,
-                    productId: sample.productId,
-                    productName: product.name,
-                    category: product.category,
-                    quantity: sample.quantity,
-                    unitPrice: sample.price,
-                    totalValue: sample.quantity * sample.price,
-                    supplier: sample.supplier,
-                    notes: sample.notes
-                };
-                
-                transactions.push(transaction);
-            });
-        }
-
-        // Add sample data when app loads - moved this function up
-        function addSampleTransactions() {
-            const today = new Date();
-            
-            // Add some sample transactions for today
-            const sampleTransactions = [
-                {
-                    productId: 1,
-                    type: 'in',
-                    quantity: 20,
-                    price: 65.00,
-                    supplier: 'Local Farm',
-                    notes: 'Weekly stock'
-                },
-                {
-                    productId: 2,
-                    type: 'out',
-                    quantity: 5,
-                    price: 25.00,
-                    supplier: 'Customer A',
-                    notes: 'Regular sale'
-                },
-                {
-                    productId: 3,
-                    type: 'out',
-                    quantity: 3,
-                    price: 35.00,
-                    supplier: 'Customer B',
-                    notes: 'Morning sale'
-                }
-            ];
-            
-            sampleTransactions.forEach(sample => {
-                const product = products.find(p => p.id === sample.productId);
-                if (product) {
-                    const transaction = {
-                        id: Date.now() + Math.random(),
-                        date: new Date(today.getTime() - Math.random() * 24 * 60 * 60 * 1000),
-                        type: sample.type,
-                        productId: sample.productId,
-                        productName: product.name,
-                        category: product.category,
-                        quantity: sample.quantity,
-                        unitPrice: sample.price,
-                        totalValue: sample.quantity * sample.price,
-                        supplier: sample.supplier,
-                        notes: sample.notes
-                    };
-                    
-                    transactions.push(transaction);
-                    
-                    // Update product stock based on transaction
-                    if (sample.type === 'in') {
-                        product.currentStock += sample.quantity;
-                    } else if (sample.type === 'out') {
-                        product.currentStock = Math.max(0, product.currentStock - sample.quantity);
-                    }
-                }
-            });
-        }
-    </script>
-</body>
-</html>
+                <div class="
