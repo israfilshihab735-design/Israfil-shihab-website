@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAMBIH BD - Advanced Inventory Management</title>
+    <title>FAMBIH BD - Inventory Management</title>
     <style>
         * {
             margin: 0;
@@ -198,11 +198,6 @@
             background: linear-gradient(135deg, #ed8936, #dd6b20);
         }
 
-        .btn-small {
-            padding: 8px 16px;
-            font-size: 0.9rem;
-        }
-
         .table-container {
             overflow-x: auto;
             border-radius: 10px;
@@ -233,34 +228,6 @@
 
         tr:hover {
             background-color: #f7fafc;
-        }
-
-        .product-image {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .product-image-large {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-bottom: 15px;
-        }
-
-        .image-placeholder {
-            width: 60px;
-            height: 60px;
-            background: #f1f5f9;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #64748b;
-            font-size: 0.8rem;
         }
 
         .alert {
@@ -325,88 +292,6 @@
         .stat-label {
             font-size: 1rem;
             opacity: 0.9;
-        }
-
-        .search-bar {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 25px;
-            font-size: 1.1rem;
-            background: #f8f9fa;
-        }
-
-        .search-input:focus {
-            border-color: #667eea;
-            background: white;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-            animation: modalSlideIn 0.3s ease;
-        }
-
-        @keyframes modalSlideIn {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .close {
-            position: absolute;
-            top: 15px;
-            right: 25px;
-            color: #aaa;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover {
-            color: #000;
-        }
-
-        .barcode-section {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .qr-code {
-            margin: 15px auto;
-            padding: 10px;
-            background: white;
-            border-radius: 10px;
-            display: inline-block;
         }
 
         .transaction-type {
@@ -499,44 +384,12 @@
             margin-top: 5px;
         }
 
-        .report-section {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .chart-container {
-            width: 100%;
-            height: 400px;
-            margin: 20px 0;
-            background: #f8f9fa;
+        .admin-panel {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
             border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #718096;
-        }
-
-        .image-upload-area {
-            border: 2px dashed #cbd5e0;
-            border-radius: 10px;
-            padding: 30px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: #f8f9fa;
-        }
-
-        .image-upload-area:hover {
-            border-color: #667eea;
-            background: #edf2f7;
-        }
-
-        .image-upload-area.drag-over {
-            border-color: #4299e1;
-            background: #e6fffa;
+            padding: 20px;
+            margin-top: 20px;
         }
 
         @media (max-width: 768px) {
@@ -562,15 +415,8 @@
                 margin: 10px auto;
                 display: block;
             }
-
-            .modal-content {
-                width: 95%;
-                margin: 10% auto;
-                padding: 20px;
-            }
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
 </head>
 <body>
     <!-- Login Section -->
@@ -634,6 +480,194 @@
             <div class="header">
                 <button class="admin-btn" onclick="showAdminPanel()">🔧 Admin</button>
                 <button class="logout-btn" onclick="logout()">Logout</button>
+                <div class="logo">FAMBIH BD</div>
+                <div class="subtitle">Inventory Management System</div>
+                <div style="color: #718096; font-size: 1rem;">
+                    Logged in as: <strong id="currentUsername"></strong>
+                </div>
+                <div class="nav-tabs">
+                    <button class="tab-btn active" onclick="showTab('dashboard')">📊 Dashboard</button>
+                    <button class="tab-btn" onclick="showTab('inventory')">📦 Inventory</button>
+                    <button class="tab-btn" onclick="showTab('history')">📋 History</button>
+                    <button class="tab-btn" onclick="showTab('sales')">💰 Sales Today</button>
+                    <button class="tab-btn" onclick="showTab('purchase')">🛒 Purchase Today</button>
+                </div>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <h2>📊 Business Overview</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalProducts">0</div>
+                        <div class="stat-label">Total Products</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalStockValue">৳0</div>
+                        <div class="stat-label">Total Stock Value</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="todayInValue">৳0</div>
+                        <div class="stat-label">Today's Stock IN Value</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="todayOutValue">৳0</div>
+                        <div class="stat-label">Today's Stock OUT Value</div>
+                    </div>
+                </div>
+
+                <div class="quick-stats">
+                    <div class="quick-stat">
+                        <div class="quick-stat-number" id="todayInCount">0</div>
+                        <div class="quick-stat-label">Stock IN Transactions</div>
+                    </div>
+                    <div class="quick-stat">
+                        <div class="quick-stat-number" id="todayOutCount">0</div>
+                        <div class="quick-stat-label">Stock OUT Transactions</div>
+                    </div>
+                    <div class="quick-stat">
+                        <div class="quick-stat-number" id="lowStockCount">0</div>
+                        <div class="quick-stat-label">Low Stock Alerts</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px;">
+                    <div>
+                        <h3 style="color: #e53e3e; margin-bottom: 15px;">⚠️ Low Stock Products</h3>
+                        <div id="lowStockList"></div>
+                    </div>
+                    <div>
+                        <h3 style="color: #4299e1; margin-bottom: 15px;">📈 Recent Activity</h3>
+                        <div id="recentActivity"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Tab -->
+            <div id="inventory" class="tab-content">
+                <h2>📦 Stock Entry & Management</h2>
+                
+                <div class="entry-form">
+                    <h3>Stock Transaction Entry</h3>
+                    <div class="transaction-type">
+                        <div class="type-btn active" onclick="setTransactionType('in')">
+                            📦 Stock IN (Purchase/Receive)
+                        </div>
+                        <div class="type-btn" onclick="setTransactionType('out')">
+                            📤 Stock OUT (Sale/Issue)
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div>
+                            <label for="entryProduct">Select Product:</label>
+                            <select id="entryProduct" onchange="loadProductDetails()">
+                                <option value="">Choose a product...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="entryQuantity">Quantity:</label>
+                            <input type="number" id="entryQuantity" min="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div>
+                            <label for="entryPrice">Unit Price (৳):</label>
+                            <input type="number" id="entryPrice" step="0.01" min="0">
+                        </div>
+                        <div>
+                            <label for="entrySupplier" id="supplierLabel">Supplier:</label>
+                            <input type="text" id="entrySupplier" placeholder="Enter supplier/customer name">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="entryNotes">Notes:</label>
+                        <textarea id="entryNotes" rows="2" placeholder="Optional transaction notes..."></textarea>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="addTransaction()">
+                            <span id="entryBtnText">Record Stock IN</span>
+                        </button>
+                        <span id="currentStockInfo" style="color: #718096; font-weight: 600;"></span>
+                    </div>
+                </div>
+
+                <div>
+                    <h3>Add New Product</h3>
+                    <div class="form-row">
+                        <div>
+                            <label for="newProductName">Product Name:</label>
+                            <input type="text" id="newProductName" required>
+                        </div>
+                        <div>
+                            <label for="newProductCategory">Category:</label>
+                            <select id="newProductCategory">
+                                <option value="Groceries">Groceries</option>
+                                <option value="Beverages">Beverages</option>
+                                <option value="Snacks">Snacks</option>
+                                <option value="Personal Care">Personal Care</option>
+                                <option value="Household">Household</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Clothing">Clothing</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="newProductPrice">Initial Price (৳):</label>
+                            <input type="number" id="newProductPrice" step="0.01" required>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="addNewProduct()">Add New Product</button>
+                </div>
+
+                <div class="table-container">
+                    <table id="stockTable">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Current Stock</th>
+                                <th>Unit Price</th>
+                                <th>Total Value</th>
+                                <th>Status</th>
+                                <th>Last Updated</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- History Tab -->
+            <div id="history" class="tab-content">
+                <h2>📋 Transaction History</h2>
+                
+                <div class="form-row">
+                    <div>
+                        <label for="dateFrom">From Date:</label>
+                        <input type="date" id="dateFrom">
+                    </div>
+                    <div>
+                        <label for="dateTo">To Date:</label>
+                        <input type="date" id="dateTo">
+                    </div>
+                    <div>
+                        <label for="typeFilter">Transaction Type:</label>
+                        <select id="typeFilter">
+                            <option value="">All Transactions</option>
+                            <option value="in">Stock IN</option>
+                            <option value="out">Stock OUT</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="filterTransactions()">Apply Filter</button>
+                <button class="btn" onclick="exportToGoogleSheetsFormat('transactions')">📊 Copy for Google Sheets</button>
+                
                 <div class="table-container">
                     <table id="transactionTable">
                         <thead>
@@ -672,7 +706,7 @@
                     </div>
                 </div>
 
-                <button class="btn" onclick="exportToGoogleSheetsFormat('sales')">📊 Export Sales Data</button>
+                <button class="btn" onclick="exportToGoogleSheetsFormat('sales')">📊 Copy Sales Data for Google Sheets</button>
                 
                 <div class="table-container">
                     <table id="salesTable">
@@ -711,7 +745,7 @@
                     </div>
                 </div>
 
-                <button class="btn" onclick="exportToGoogleSheetsFormat('purchase')">📊 Export Purchase Data</button>
+                <button class="btn" onclick="exportToGoogleSheetsFormat('purchase')">📊 Copy Purchase Data for Google Sheets</button>
                 
                 <div class="table-container">
                     <table id="purchaseTable">
@@ -730,136 +764,6 @@
                     </table>
                 </div>
             </div>
-
-            <!-- Reports Tab -->
-            <div id="reports" class="tab-content">
-                <h2>📊 Advanced Reports & Analytics</h2>
-                
-                <div class="report-section">
-                    <h3>📈 Sales Performance</h3>
-                    <div class="form-row">
-                        <div>
-                            <label for="reportFrom">From Date:</label>
-                            <input type="date" id="reportFrom">
-                        </div>
-                        <div>
-                            <label for="reportTo">To Date:</label>
-                            <input type="date" id="reportTo">
-                        </div>
-                        <div>
-                            <label for="reportCategory">Category:</label>
-                            <select id="reportCategory">
-                                <option value="">All Categories</option>
-                                <option value="Groceries">Groceries</option>
-                                <option value="Beverages">Beverages</option>
-                                <option value="Snacks">Snacks</option>
-                                <option value="Personal Care">Personal Care</option>
-                                <option value="Household">Household</option>
-                                <option value="Electronics">Electronics</option>
-                                <option value="Clothing">Clothing</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div style="margin: 20px 0;">
-                        <button class="btn btn-primary" onclick="generateReport()">Generate Report</button>
-                        <button class="btn" onclick="exportReport()">📊 Export Report</button>
-                    </div>
-
-                    <div class="chart-container" id="salesChart">
-                        📊 Sales chart will appear here after generating report
-                    </div>
-
-                    <div id="reportSummary"></div>
-                </div>
-
-                <div class="report-section">
-                    <h3>🏆 Top Performing Products</h3>
-                    <div id="topProducts"></div>
-                </div>
-
-                <div class="report-section">
-                    <h3>💰 Revenue Analysis</h3>
-                    <div id="revenueAnalysis"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Product Edit Modal -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeEditModal()">&times;</span>
-            <h2>✏️ Edit Product</h2>
-            
-            <div class="form-group">
-                <label>Product Image:</label>
-                <div class="image-upload-area" onclick="document.getElementById('editProductImage').click()">
-                    <div id="editImagePreview">
-                        <img id="editPreviewImg" class="product-image-large" alt="Product Preview">
-                    </div>
-                    <input type="file" id="editProductImage" accept="image/*" style="display: none;" onchange="previewEditImage(this)">
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div>
-                    <label for="editProductName">Product Name:</label>
-                    <input type="text" id="editProductName" required>
-                </div>
-                <div>
-                    <label for="editProductCategory">Category:</label>
-                    <select id="editProductCategory">
-                        <option value="Groceries">Groceries</option>
-                        <option value="Beverages">Beverages</option>
-                        <option value="Snacks">Snacks</option>
-                        <option value="Personal Care">Personal Care</option>
-                        <option value="Household">Household</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Clothing">Clothing</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div>
-                    <label for="editProductPrice">Price (৳):</label>
-                    <input type="number" id="editProductPrice" step="0.01" required>
-                </div>
-                <div>
-                    <label for="editProductBarcode">Barcode/SKU:</label>
-                    <input type="text" id="editProductBarcode">
-                </div>
-                <div>
-                    <label for="editProductMinStock">Min Stock Alert:</label>
-                    <input type="number" id="editProductMinStock" min="1">
-                </div>
-            </div>
-
-            <div class="barcode-section">
-                <h4>🏷️ Product QR Code</h4>
-                <div id="editQrCode" class="qr-code"></div>
-                <button class="btn btn-small" onclick="printQRCode()">🖨️ Print QR Code</button>
-            </div>
-            
-            <div style="margin-top: 30px;">
-                <button class="btn btn-primary" onclick="updateProduct()">💾 Save Changes</button>
-                <button class="btn btn-danger" onclick="deleteProduct()">🗑️ Delete Product</button>
-                <button class="btn" onclick="closeEditModal()">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Image View Modal -->
-    <div id="imageModal" class="modal">
-        <div class="modal-content" style="max-width: 800px;">
-            <span class="close" onclick="closeImageModal()">&times;</span>
-            <div style="text-align: center;">
-                <img id="modalImage" style="max-width: 100%; max-height: 70vh; border-radius: 10px;">
-                <div id="imageProductInfo" style="margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px;"></div>
-            </div>
         </div>
     </div>
 
@@ -867,9 +771,6 @@
         // Application state
         let currentUser = null;
         let transactionType = 'in';
-        let currentEditingProductId = null;
-        let filteredProducts = [];
-        
         let managerCredentials = {
             username: 'Mahfuz_2217',
             password: 'assdi2207'
@@ -877,54 +778,10 @@
         const adminPassword = 'cr7lm10njr';
 
         let products = [
-            {
-                id: 1, 
-                name: "Rice (1kg)", 
-                category: "Groceries", 
-                currentStock: 50, 
-                unitPrice: 65.00, 
-                lastUpdated: new Date(), 
-                minStock: 10,
-                barcode: "RIC001",
-                image: null,
-                description: "Premium quality rice"
-            },
-            {
-                id: 2, 
-                name: "Coca Cola (500ml)", 
-                category: "Beverages", 
-                currentStock: 30, 
-                unitPrice: 25.00, 
-                lastUpdated: new Date(), 
-                minStock: 15,
-                barcode: "COK002",
-                image: null,
-                description: "Refreshing cola drink"
-            },
-            {
-                id: 3, 
-                name: "Bread", 
-                category: "Groceries", 
-                currentStock: 20, 
-                unitPrice: 35.00, 
-                lastUpdated: new Date(), 
-                minStock: 5,
-                barcode: "BRD003",
-                image: null,
-                description: "Fresh daily bread"
-            },
-            {
-                id: 4, 
-                name: "Shampoo (200ml)", 
-                category: "Personal Care", 
-                currentStock: 8, 
-                unitPrice: 120.00, 
-                lastUpdated: new Date(), 
-                minStock: 10,
-                barcode: "SHP004",
-                image: null,
-                description: "Hair care shampoo"
-            }
+            {id: 1, name: "Rice (1kg)", category: "Groceries", currentStock: 50, unitPrice: 65.00, lastUpdated: new Date(), minStock: 10},
+            {id: 2, name: "Coca Cola (500ml)", category: "Beverages", currentStock: 30, unitPrice: 25.00, lastUpdated: new Date(), minStock: 15},
+            {id: 3, name: "Bread", category: "Groceries", currentStock: 20, unitPrice: 35.00, lastUpdated: new Date(), minStock: 5},
+            {id: 4, name: "Shampoo (200ml)", category: "Personal Care", currentStock: 8, unitPrice: 120.00, lastUpdated: new Date(), minStock: 10},
         ];
         
         let transactions = [];
@@ -932,19 +789,13 @@
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
-            // Set default date ranges
+            // Set default date range
             const today = new Date();
             const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-            const oneMonthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
-            
             document.getElementById('dateFrom').value = oneWeekAgo.toISOString().split('T')[0];
             document.getElementById('dateTo').value = today.toISOString().split('T')[0];
-            document.getElementById('reportFrom').value = oneMonthAgo.toISOString().split('T')[0];
-            document.getElementById('reportTo').value = today.toISOString().split('T')[0];
             
             updateProductOptions();
-            addSampleTransactions();
-            filteredProducts = [...products];
         });
 
         // Authentication functions
@@ -959,7 +810,7 @@
                 document.getElementById('adminPanel').style.display = 'none';
                 document.getElementById('mainApp').style.display = 'block';
                 initializeApp();
-                showAlert('Welcome to FAMBIH BD Advanced Management System!', 'success');
+                showAlert('Welcome to FAMBIH BD Management System!', 'success');
             } else {
                 showAlert('Invalid username or password!', 'danger');
             }
@@ -1055,56 +906,12 @@
                 updateDashboard();
             } else if (tabName === 'inventory') {
                 updateStockTable();
-                filteredProducts = [...products];
             } else if (tabName === 'history') {
                 updateTransactionTable();
             } else if (tabName === 'sales') {
                 updateSalesTable();
             } else if (tabName === 'purchase') {
                 updatePurchaseTable();
-            } else if (tabName === 'reports') {
-                generateReport();
-            }
-        }
-
-        // Product Search Function
-        function searchProducts() {
-            const searchTerm = document.getElementById('productSearch').value.toLowerCase();
-            
-            if (searchTerm === '') {
-                filteredProducts = [...products];
-            } else {
-                filteredProducts = products.filter(product => 
-                    product.name.toLowerCase().includes(searchTerm) ||
-                    product.category.toLowerCase().includes(searchTerm) ||
-                    (product.barcode && product.barcode.toLowerCase().includes(searchTerm)) ||
-                    (product.description && product.description.toLowerCase().includes(searchTerm))
-                );
-            }
-            
-            updateStockTable();
-        }
-
-        // Image handling functions
-        function previewImage(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('previewImg').src = e.target.result;
-                    document.getElementById('imagePreview').style.display = 'block';
-                    document.getElementById('uploadPrompt').style.display = 'none';
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function previewEditImage(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('editPreviewImg').src = e.target.result;
-                }
-                reader.readAsDataURL(input.files[0]);
             }
         }
 
@@ -1123,7 +930,7 @@
             document.getElementById('supplierLabel').textContent = labelText;
         }
 
-        // Product management functions
+        // Product management
         function updateProductOptions() {
             const select = document.getElementById('entryProduct');
             select.innerHTML = '<option value="">Choose a product...</option>';
@@ -1153,238 +960,31 @@
             const name = document.getElementById('newProductName').value;
             const category = document.getElementById('newProductCategory').value;
             const price = parseFloat(document.getElementById('newProductPrice').value);
-            const barcode = document.getElementById('newProductBarcode').value;
-            const minStock = parseInt(document.getElementById('newProductMinStock').value) || 10;
-            const imageInput = document.getElementById('newProductImage');
 
             if (!name || !price) {
                 showAlert('Please fill in product name and price!', 'danger');
                 return;
             }
 
-            // Handle image
-            let imageData = null;
-            if (imageInput.files && imageInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    imageData = e.target.result;
-                    
-                    createProduct();
-                };
-                reader.readAsDataURL(imageInput.files[0]);
-            } else {
-                createProduct();
-            }
-
-            function createProduct() {
-                const newProduct = {
-                    id: nextProductId++,
-                    name: name,
-                    category: category,
-                    currentStock: 0,
-                    unitPrice: price,
-                    lastUpdated: new Date(),
-                    minStock: minStock,
-                    barcode: barcode || `PRD${nextProductId-1}`,
-                    image: imageData,
-                    description: `${category} product`
-                };
-
-                products.push(newProduct);
-                updateProductOptions();
-                updateStockTable();
-                filteredProducts = [...products];
-                
-                // Clear form
-                clearNewProductForm();
-                
-                showAlert('New product added successfully!', 'success');
-            }
-        }
-
-        function clearNewProductForm() {
-            document.getElementById('newProductName').value = '';
-            document.getElementById('newProductPrice').value = '';
-            document.getElementById('newProductBarcode').value = '';
-            document.getElementById('newProductMinStock').value = '10';
-            document.getElementById('newProductImage').value = '';
-            document.getElementById('imagePreview').style.display = 'none';
-            document.getElementById('uploadPrompt').style.display = 'block';
-        }
-
-        // Edit Product Functions
-        function editProduct(productId) {
-            const product = products.find(p => p.id === productId);
-            if (!product) return;
-
-            currentEditingProductId = productId;
-            
-            // Populate form
-            document.getElementById('editProductName').value = product.name;
-            document.getElementById('editProductCategory').value = product.category;
-            document.getElementById('editProductPrice').value = product.unitPrice;
-            document.getElementById('editProductBarcode').value = product.barcode || '';
-            document.getElementById('editProductMinStock').value = product.minStock;
-            
-            // Show image
-            const editPreviewImg = document.getElementById('editPreviewImg');
-            if (product.image) {
-                editPreviewImg.src = product.image;
-                editPreviewImg.style.display = 'block';
-            } else {
-                editPreviewImg.style.display = 'none';
-            }
-
-            // Generate QR code
-            generateQRCode(product);
-            
-            // Show modal
-            document.getElementById('editModal').style.display = 'block';
-        }
-
-        function updateProduct() {
-            if (!currentEditingProductId) return;
-
-            const product = products.find(p => p.id === currentEditingProductId);
-            if (!product) return;
-
-            const name = document.getElementById('editProductName').value;
-            const category = document.getElementById('editProductCategory').value;
-            const price = parseFloat(document.getElementById('editProductPrice').value);
-            const barcode = document.getElementById('editProductBarcode').value;
-            const minStock = parseInt(document.getElementById('editProductMinStock').value);
-            const imageInput = document.getElementById('editProductImage');
-
-            if (!name || !price) {
-                showAlert('Please fill in all required fields!', 'danger');
-                return;
-            }
-
-            // Update product
-            product.name = name;
-            product.category = category;
-            product.unitPrice = price;
-            product.barcode = barcode;
-            product.minStock = minStock;
-            product.lastUpdated = new Date();
-
-            // Handle new image
-            if (imageInput.files && imageInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    product.image = e.target.result;
-                    finishUpdate();
-                };
-                reader.readAsDataURL(imageInput.files[0]);
-            } else {
-                finishUpdate();
-            }
-
-            function finishUpdate() {
-                updateProductOptions();
-                updateStockTable();
-                filteredProducts = [...products];
-                closeEditModal();
-                showAlert('Product updated successfully!', 'success');
-            }
-        }
-
-        function deleteProduct() {
-            if (!currentEditingProductId) return;
-
-            if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
-                const productIndex = products.findIndex(p => p.id === currentEditingProductId);
-                if (productIndex > -1) {
-                    const productName = products[productIndex].name;
-                    products.splice(productIndex, 1);
-                    
-                    updateProductOptions();
-                    updateStockTable();
-                    filteredProducts = [...products];
-                    closeEditModal();
-                    
-                    showAlert(`Product "${productName}" deleted successfully!`, 'success');
-                }
-            }
-        }
-
-        function closeEditModal() {
-            document.getElementById('editModal').style.display = 'none';
-            currentEditingProductId = null;
-            document.getElementById('editProductImage').value = '';
-        }
-
-        // QR Code Functions
-        function generateQRCode(product) {
-            const qrDiv = document.getElementById('editQrCode');
-            qrDiv.innerHTML = '';
-            
-            const productInfo = {
-                id: product.id,
-                name: product.name,
-                barcode: product.barcode,
-                price: product.unitPrice
+            const newProduct = {
+                id: nextProductId++,
+                name: name,
+                category: category,
+                currentStock: 0,
+                unitPrice: price,
+                lastUpdated: new Date(),
+                minStock: 5
             };
 
-            if (typeof QRCode !== 'undefined') {
-                try {
-                    const qr = new QRCode(qrDiv, {
-                        text: JSON.stringify(productInfo),
-                        width: 150,
-                        height: 150,
-                        colorDark: "#000000",
-                        colorLight: "#ffffff",
-                        correctLevel: QRCode.CorrectLevel.H
-                    });
-                } catch (error) {
-                    qrDiv.innerHTML = `<div style="width: 150px; height: 150px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border-radius: 5px;">QR Code<br>Generated</div>`;
-                }
-            } else {
-                qrDiv.innerHTML = `<div style="width: 150px; height: 150px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border-radius: 5px;">QR Code<br>Generated</div>`;
-            }
-        }
-
-        function printQRCode() {
-            const qrDiv = document.getElementById('editQrCode');
-            const printWindow = window.open('', '_blank');
-            const product = products.find(p => p.id === currentEditingProductId);
+            products.push(newProduct);
+            updateProductOptions();
+            updateStockTable();
             
-            printWindow.document.write(`
-                <html>
-                <head>
-                    <title>QR Code - ${product.name}</title>
-                    <style>
-                        body { text-align: center; font-family: Arial, sans-serif; margin: 50px; }
-                        .qr-container { border: 1px solid #ccc; padding: 20px; display: inline-block; }
-                    </style>
-                </head>
-                <body>
-                    <div class="qr-container">
-                        <h2>${product.name}</h2>
-                        <div>${qrDiv.innerHTML}</div>
-                        <p>Barcode: ${product.barcode}</p>
-                        <p>Price: ৳${product.unitPrice}</p>
-                    </div>
-                </body>
-                </html>
-            `);
+            // Clear form
+            document.getElementById('newProductName').value = '';
+            document.getElementById('newProductPrice').value = '';
             
-            printWindow.document.close();
-            printWindow.print();
-        }
-
-        // Image Modal Functions
-        function showImageModal(imageSrc, productName, productInfo) {
-            document.getElementById('modalImage').src = imageSrc;
-            document.getElementById('imageProductInfo').innerHTML = `
-                <h3>${productName}</h3>
-                <p>${productInfo}</p>
-            `;
-            document.getElementById('imageModal').style.display = 'block';
-        }
-
-        function closeImageModal() {
-            document.getElementById('imageModal').style.display = 'none';
+            showAlert('New product added successfully!', 'success');
         }
 
         // Transaction management
@@ -1454,17 +1054,6 @@
             document.getElementById('currentStockInfo').textContent = '';
         }
 
-        function clearAllTransactions() {
-            if (confirm('Are you sure you want to clear all transaction history? This action cannot be undone.')) {
-                transactions = [];
-                updateTransactionTable();
-                updateSalesTable();
-                updatePurchaseTable();
-                updateDashboard();
-                showAlert('All transaction history cleared!', 'success');
-            }
-        }
-
         // Dashboard updates
         function updateDashboard() {
             // Calculate totals
@@ -1527,30 +1116,19 @@
             const tbody = document.querySelector('#stockTable tbody');
             tbody.innerHTML = '';
 
-            const productsToShow = filteredProducts.length ? filteredProducts : products;
-
-            productsToShow.forEach(product => {
+            products.forEach(product => {
                 const row = document.createElement('tr');
                 const isLowStock = product.currentStock <= product.minStock;
                 const totalValue = product.currentStock * product.unitPrice;
                 
                 row.innerHTML = `
-                    <td>
-                        ${product.image ? 
-                            `<img src="${product.image}" class="product-image" onclick="showImageModal('${product.image}', '${product.name}', 'Stock: ${product.currentStock} | Price: ৳${product.unitPrice}')" alt="${product.name}">` :
-                            `<div class="image-placeholder">No Image</div>`
-                        }
-                    </td>
                     <td><strong>${product.name}</strong></td>
                     <td>${product.category}</td>
                     <td class="${isLowStock ? 'low-stock' : ''}">${product.currentStock}</td>
                     <td>৳${product.unitPrice.toFixed(2)}</td>
                     <td>৳${totalValue.toFixed(2)}</td>
                     <td>${isLowStock ? '<span class="low-stock">⚠️ Low Stock</span>' : '✅ In Stock'}</td>
-                    <td>${product.barcode || 'N/A'}</td>
-                    <td>
-                        <button class="btn btn-small btn-primary" onclick="editProduct(${product.id})">✏️ Edit</button>
-                    </td>
+                    <td>${product.lastUpdated.toLocaleDateString()}</td>
                 `;
                 tbody.appendChild(row);
             });
@@ -1562,11 +1140,6 @@
             tbody.innerHTML = '';
 
             const filteredTransactions = getFilteredTransactions();
-            
-            if (filteredTransactions.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #718096;">No transactions found</td></tr>';
-                return;
-            }
             
             filteredTransactions.reverse().forEach(transaction => {
                 const row = document.createElement('tr');
@@ -1663,190 +1236,11 @@
             });
         }
 
-        // Reports Functions
-        function generateReport() {
-            const fromDate = new Date(document.getElementById('reportFrom').value || '2020-01-01');
-            const toDate = new Date(document.getElementById('reportTo').value || '2030-12-31');
-            toDate.setHours(23, 59, 59, 999);
-            
-            const categoryFilter = document.getElementById('reportCategory').value;
-            
-            // Filter transactions
-            const reportTransactions = transactions.filter(t => {
-                const transactionDate = new Date(t.date);
-                const dateMatch = transactionDate >= fromDate && transactionDate <= toDate;
-                const categoryMatch = !categoryFilter || t.category === categoryFilter;
-                return dateMatch && categoryMatch;
-            });
-
-            // Generate report summary
-            const salesTransactions = reportTransactions.filter(t => t.type === 'out');
-            const purchaseTransactions = reportTransactions.filter(t => t.type === 'in');
-            
-            const totalSales = salesTransactions.reduce((sum, t) => sum + t.totalValue, 0);
-            const totalPurchases = purchaseTransactions.reduce((sum, t) => sum + t.totalValue, 0);
-            const profit = totalSales - totalPurchases;
-            
-            // Update summary
-            document.getElementById('reportSummary').innerHTML = `
-                <div class="quick-stats">
-                    <div class="quick-stat">
-                        <div class="quick-stat-number">৳${totalSales.toFixed(2)}</div>
-                        <div class="quick-stat-label">Total Sales</div>
-                    </div>
-                    <div class="quick-stat">
-                        <div class="quick-stat-number">৳${totalPurchases.toFixed(2)}</div>
-                        <div class="quick-stat-label">Total Purchases</div>
-                    </div>
-                    <div class="quick-stat">
-                        <div class="quick-stat-number" style="color: ${profit >= 0 ? '#48bb78' : '#f56565'};">৳${profit.toFixed(2)}</div>
-                        <div class="quick-stat-label">Net Profit/Loss</div>
-                    </div>
-                    <div class="quick-stat">
-                        <div class="quick-stat-number">${salesTransactions.length}</div>
-                        <div class="quick-stat-label">Total Transactions</div>
-                    </div>
-                </div>
-            `;
-
-            // Generate top products
-            const productSales = {};
-            salesTransactions.forEach(t => {
-                if (!productSales[t.productName]) {
-                    productSales[t.productName] = { quantity: 0, value: 0 };
-                }
-                productSales[t.productName].quantity += t.quantity;
-                productSales[t.productName].value += t.totalValue;
-            });
-
-            const topProducts = Object.entries(productSales)
-                .sort((a, b) => b[1].value - a[1].value)
-                .slice(0, 5);
-
-            document.getElementById('topProducts').innerHTML = topProducts.length ? 
-                topProducts.map(([name, data], index) => `
-                    <div style="background: white; padding: 15px; margin: 10px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <span style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 5px 10px; border-radius: 15px; margin-right: 10px;">#${index + 1}</span>
-                            <strong>${name}</strong>
-                        </div>
-                        <div style="text-align: right;">
-                            <div style="font-weight: bold; color: #667eea;">৳${data.value.toFixed(2)}</div>
-                            <div style="color: #718096; font-size: 0.9rem;">${data.quantity} units sold</div>
-                        </div>
-                    </div>
-                `).join('') : 
-                '<p style="color: #718096; text-align: center;">No sales data available for the selected period</p>';
-
-            // Generate revenue analysis
-            const dailySales = {};
-            salesTransactions.forEach(t => {
-                const dateKey = t.date.toDateString();
-                if (!dailySales[dateKey]) dailySales[dateKey] = 0;
-                dailySales[dateKey] += t.totalValue;
-            });
-
-            const avgDailySales = Object.values(dailySales).reduce((sum, val) => sum + val, 0) / Math.max(Object.keys(dailySales).length, 1);
-            const bestDay = Object.entries(dailySales).sort((a, b) => b[1] - a[1])[0];
-
-            document.getElementById('revenueAnalysis').innerHTML = `
-                <div class="quick-stats">
-                    <div class="quick-stat">
-                        <div class="quick-stat-number">৳${avgDailySales.toFixed(2)}</div>
-                        <div class="quick-stat-label">Average Daily Sales</div>
-                    </div>
-                    <div class="quick-stat">
-                        <div class="quick-stat-number">${bestDay ? `৳${bestDay[1].toFixed(2)}` : '৳0'}</div>
-                        <div class="quick-stat-label">Best Day Sales</div>
-                    </div>
-                    <div class="quick-stat">
-                        <div class="quick-stat-number">${Object.keys(dailySales).length}</div>
-                        <div class="quick-stat-label">Active Sales Days</div>
-                    </div>
-                </div>
-                ${bestDay ? `<p style="margin-top: 15px; color: #667eea;"><strong>Best performing day:</strong> ${new Date(bestDay[0]).toLocaleDateString()}</p>` : ''}
-            `;
-
-            // Update chart placeholder
-            document.getElementById('salesChart').innerHTML = `
-                <div style="text-align: center; color: #667eea;">
-                    <h3>📈 Sales Trend Analysis</h3>
-                    <div style="margin: 20px 0; padding: 20px; background: white; border-radius: 10px;">
-                        <p><strong>Report Period:</strong> ${fromDate.toLocaleDateString()} to ${toDate.toLocaleDateString()}</p>
-                        <p><strong>Category:</strong> ${categoryFilter || 'All Categories'}</p>
-                        <p><strong>Total Transactions:</strong> ${reportTransactions.length}</p>
-                    </div>
-                </div>
-            `;
-        }
-
-        function exportReport() {
-            const fromDate = document.getElementById('reportFrom').value;
-            const toDate = document.getElementById('reportTo').value;
-            const category = document.getElementById('reportCategory').value;
-            
-            let csvContent = `FAMBIH BD - Business Report\n`;
-            csvContent += `Period: ${fromDate} to ${toDate}\n`;
-            csvContent += `Category: ${category || 'All Categories'}\n\n`;
-            
-            csvContent += `Product Name\tTotal Sales Qty\tTotal Sales Value\tTotal Purchase Qty\tTotal Purchase Value\tNet Profit\n`;
-            
-            const productSummary = {};
-            
-            transactions.forEach(t => {
-                const dateMatch = (!fromDate || t.date >= new Date(fromDate)) && 
-                                (!toDate || t.date <= new Date(toDate));
-                const categoryMatch = !category || t.category === category;
-                
-                if (dateMatch && categoryMatch) {
-                    if (!productSummary[t.productName]) {
-                        productSummary[t.productName] = {
-                            salesQty: 0, salesValue: 0,
-                            purchaseQty: 0, purchaseValue: 0
-                        };
-                    }
-                    
-                    if (t.type === 'out') {
-                        productSummary[t.productName].salesQty += t.quantity;
-                        productSummary[t.productName].salesValue += t.totalValue;
-                    } else {
-                        productSummary[t.productName].purchaseQty += t.quantity;
-                        productSummary[t.productName].purchaseValue += t.totalValue;
-                    }
-                }
-            });
-            
-            Object.entries(productSummary).forEach(([name, data]) => {
-                const profit = data.salesValue - data.purchaseValue;
-                csvContent += `${name}\t${data.salesQty}\t${data.salesValue.toFixed(2)}\t${data.purchaseQty}\t${data.purchaseValue.toFixed(2)}\t${profit.toFixed(2)}\n`;
-            });
-            
-            // Copy to clipboard
-            navigator.clipboard.writeText(csvContent).then(() => {
-                showAlert('Report data copied to clipboard!', 'success');
-            }).catch(() => {
-                // Fallback
-                const popup = document.createElement('div');
-                popup.style.cssText = `
-                    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                    background: white; padding: 20px; border-radius: 10px;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 2000;
-                    max-width: 80%; max-height: 80%;
-                `;
-                popup.innerHTML = `
-                    <h3>Copy this report data:</h3>
-                    <textarea readonly style="width: 100%; height: 300px; margin: 10px 0;">${csvContent}</textarea>
-                    <button onclick="this.parentElement.remove()" class="btn">Close</button>
-                `;
-                document.body.appendChild(popup);
-            });
-        }
-
         // Filter functions
         function getFilteredTransactions() {
             const fromDate = new Date(document.getElementById('dateFrom').value || '2020-01-01');
             const toDate = new Date(document.getElementById('dateTo').value || '2030-12-31');
-            toDate.setHours(23, 59, 59, 999);
+            toDate.setHours(23, 59, 59, 999); // Include entire day
             
             const typeFilter = document.getElementById('typeFilter').value;
             
@@ -1862,17 +1256,17 @@
             updateTransactionTable();
         }
 
-        // Export functions
+        // Google Sheets Export Functions
         function exportToGoogleSheetsFormat(type) {
             let csvContent = '';
             let filename = '';
             
             if (type === 'inventory') {
-                csvContent = 'Product Name\tCategory\tCurrent Stock\tUnit Price\tTotal Value\tBarcode\tStatus\tLast Updated\n';
+                csvContent = 'Product Name\tCategory\tCurrent Stock\tUnit Price\tTotal Value\tStatus\tLast Updated\n';
                 products.forEach(product => {
                     const totalValue = product.currentStock * product.unitPrice;
                     const status = product.currentStock <= product.minStock ? 'Low Stock' : 'In Stock';
-                    csvContent += `${product.name}\t${product.category}\t${product.currentStock}\t${product.unitPrice.toFixed(2)}\t${totalValue.toFixed(2)}\t${product.barcode || ''}\t${status}\t${product.lastUpdated.toLocaleDateString()}\n`;
+                    csvContent += `${product.name}\t${product.category}\t${product.currentStock}\t${product.unitPrice.toFixed(2)}\t${totalValue.toFixed(2)}\t${status}\t${product.lastUpdated.toLocaleDateString()}\n`;
                 });
                 filename = 'FAMBIH_BD_Inventory';
                 
@@ -1908,19 +1302,28 @@
             navigator.clipboard.writeText(csvContent).then(() => {
                 showAlert('Data copied to clipboard! You can now paste it in Google Sheets.', 'success');
             }).catch(() => {
-                // Fallback
+                // Fallback: show data in a textarea for manual copying
                 const popup = document.createElement('div');
                 popup.style.cssText = `
-                    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                    background: white; padding: 20px; border-radius: 10px;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 2000;
-                    max-width: 80%; max-height: 80%;
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: white;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                    z-index: 2000;
+                    max-width: 80%;
+                    max-height: 80%;
                 `;
+                
                 popup.innerHTML = `
                     <h3>Copy this data to Google Sheets:</h3>
                     <textarea readonly style="width: 100%; height: 300px; margin: 10px 0;">${csvContent}</textarea>
-                    <button onclick="this.parentElement.remove()" class="btn">Close</button>
+                    <button onclick="this.parentElement.remove()" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px;">Close</button>
                 `;
+                
                 document.body.appendChild(popup);
             });
         }
@@ -1946,10 +1349,11 @@
             }, 4000);
         }
 
-        // Sample data
+        // Initialize data for demo
         function addSampleTransactions() {
             const today = new Date();
             
+            // Add some sample transactions for today
             const sampleTransactions = [
                 {
                     productId: 1,
@@ -1974,14 +1378,58 @@
                     price: 35.00,
                     supplier: 'Customer B',
                     notes: 'Morning sale'
+                }
+            ];
+            
+            sampleTransactions.forEach(sample => {
+                const product = products.find(p => p.id === sample.productId);
+                const transaction = {
+                    id: Date.now() + Math.random(),
+                    date: new Date(today.getTime() - Math.random() * 24 * 60 * 60 * 1000), // Random time today
+                    type: sample.type,
+                    productId: sample.productId,
+                    productName: product.name,
+                    category: product.category,
+                    quantity: sample.quantity,
+                    unitPrice: sample.price,
+                    totalValue: sample.quantity * sample.price,
+                    supplier: sample.supplier,
+                    notes: sample.notes
+                };
+                
+                transactions.push(transaction);
+            });
+        }
+
+        // Add sample data when app loads - moved this function up
+        function addSampleTransactions() {
+            const today = new Date();
+            
+            // Add some sample transactions for today
+            const sampleTransactions = [
+                {
+                    productId: 1,
+                    type: 'in',
+                    quantity: 20,
+                    price: 65.00,
+                    supplier: 'Local Farm',
+                    notes: 'Weekly stock'
                 },
                 {
-                    productId: 4,
-                    type: 'in',
-                    quantity: 12,
-                    price: 120.00,
-                    supplier: 'Beauty Supplier',
-                    notes: 'Monthly restock'
+                    productId: 2,
+                    type: 'out',
+                    quantity: 5,
+                    price: 25.00,
+                    supplier: 'Customer A',
+                    notes: 'Regular sale'
+                },
+                {
+                    productId: 3,
+                    type: 'out',
+                    quantity: 3,
+                    price: 35.00,
+                    supplier: 'Customer B',
+                    notes: 'Morning sale'
                 }
             ];
             
@@ -2004,7 +1452,7 @@
                     
                     transactions.push(transaction);
                     
-                    // Update product stock
+                    // Update product stock based on transaction
                     if (sample.type === 'in') {
                         product.currentStock += sample.quantity;
                     } else if (sample.type === 'out') {
@@ -2013,260 +1461,6 @@
                 }
             });
         }
-
-        // Close modals when clicking outside
-        window.onclick = function(event) {
-            const editModal = document.getElementById('editModal');
-            const imageModal = document.getElementById('imageModal');
-            
-            if (event.target === editModal) {
-                closeEditModal();
-            }
-            if (event.target === imageModal) {
-                closeImageModal();
-            }
-        }
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeEditModal();
-                closeImageModal();
-            }
-        });
     </script>
 </body>
-</html>logo">FAMBIH BD</div>
-                <div class="subtitle">Advanced Inventory Management System</div>
-                <div style="color: #718096; font-size: 1rem;">
-                    Logged in as: <strong id="currentUsername"></strong>
-                </div>
-                <div class="nav-tabs">
-                    <button class="tab-btn active" onclick="showTab('dashboard')">📊 Dashboard</button>
-                    <button class="tab-btn" onclick="showTab('inventory')">📦 Inventory</button>
-                    <button class="tab-btn" onclick="showTab('history')">📋 History</button>
-                    <button class="tab-btn" onclick="showTab('sales')">💰 Sales Today</button>
-                    <button class="tab-btn" onclick="showTab('purchase')">🛒 Purchase Today</button>
-                    <button class="tab-btn" onclick="showTab('reports')">📊 Reports</button>
-                </div>
-            </div>
-
-            <!-- Dashboard Tab -->
-            <div id="dashboard" class="tab-content active">
-                <h2>📊 Business Overview</h2>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalProducts">0</div>
-                        <div class="stat-label">Total Products</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalStockValue">৳0</div>
-                        <div class="stat-label">Total Stock Value</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="todayInValue">৳0</div>
-                        <div class="stat-label">Today's Stock IN Value</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="todayOutValue">৳0</div>
-                        <div class="stat-label">Today's Stock OUT Value</div>
-                    </div>
-                </div>
-
-                <div class="quick-stats">
-                    <div class="quick-stat">
-                        <div class="quick-stat-number" id="todayInCount">0</div>
-                        <div class="quick-stat-label">Stock IN Transactions</div>
-                    </div>
-                    <div class="quick-stat">
-                        <div class="quick-stat-number" id="todayOutCount">0</div>
-                        <div class="quick-stat-label">Stock OUT Transactions</div>
-                    </div>
-                    <div class="quick-stat">
-                        <div class="quick-stat-number" id="lowStockCount">0</div>
-                        <div class="quick-stat-label">Low Stock Alerts</div>
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px;">
-                    <div>
-                        <h3 style="color: #e53e3e; margin-bottom: 15px;">⚠️ Low Stock Products</h3>
-                        <div id="lowStockList"></div>
-                    </div>
-                    <div>
-                        <h3 style="color: #4299e1; margin-bottom: 15px;">📈 Recent Activity</h3>
-                        <div id="recentActivity"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Inventory Tab -->
-            <div id="inventory" class="tab-content">
-                <h2>📦 Product Management</h2>
-                
-                <!-- Search Bar -->
-                <div class="search-bar">
-                    <input type="text" class="search-input" id="productSearch" 
-                           placeholder="🔍 Search products by name, category, or barcode..." 
-                           onkeyup="searchProducts()">
-                </div>
-
-                <!-- Stock Entry Form -->
-                <div class="entry-form">
-                    <h3>Stock Transaction Entry</h3>
-                    <div class="transaction-type">
-                        <div class="type-btn active" onclick="setTransactionType('in')">
-                            📦 Stock IN (Purchase/Receive)
-                        </div>
-                        <div class="type-btn" onclick="setTransactionType('out')">
-                            📤 Stock OUT (Sale/Issue)
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div>
-                            <label for="entryProduct">Select Product:</label>
-                            <select id="entryProduct" onchange="loadProductDetails()">
-                                <option value="">Choose a product...</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="entryQuantity">Quantity:</label>
-                            <input type="number" id="entryQuantity" min="1" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div>
-                            <label for="entryPrice">Unit Price (৳):</label>
-                            <input type="number" id="entryPrice" step="0.01" min="0">
-                        </div>
-                        <div>
-                            <label for="entrySupplier" id="supplierLabel">Supplier:</label>
-                            <input type="text" id="entrySupplier" placeholder="Enter supplier/customer name">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="entryNotes">Notes:</label>
-                        <textarea id="entryNotes" rows="2" placeholder="Optional transaction notes..."></textarea>
-                    </div>
-
-                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                        <button class="btn btn-primary" onclick="addTransaction()">
-                            <span id="entryBtnText">Record Stock IN</span>
-                        </button>
-                        <span id="currentStockInfo" style="color: #718096; font-weight: 600;"></span>
-                    </div>
-                </div>
-
-                <!-- Add New Product -->
-                <div class="entry-form">
-                    <h3>Add New Product</h3>
-                    
-                    <div class="form-row">
-                        <div style="grid-column: span 2;">
-                            <label>Product Image:</label>
-                            <div class="image-upload-area" onclick="document.getElementById('newProductImage').click()">
-                                <div id="imagePreview" style="display: none;">
-                                    <img id="previewImg" class="product-image-large" alt="Product Preview">
-                                </div>
-                                <div id="uploadPrompt">
-                                    📸 Click to upload product image<br>
-                                    <small style="color: #718096;">JPG, PNG or GIF (Max 5MB)</small>
-                                </div>
-                                <input type="file" id="newProductImage" accept="image/*" style="display: none;" onchange="previewImage(this)">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div>
-                            <label for="newProductName">Product Name:</label>
-                            <input type="text" id="newProductName" required>
-                        </div>
-                        <div>
-                            <label for="newProductCategory">Category:</label>
-                            <select id="newProductCategory">
-                                <option value="Groceries">Groceries</option>
-                                <option value="Beverages">Beverages</option>
-                                <option value="Snacks">Snacks</option>
-                                <option value="Personal Care">Personal Care</option>
-                                <option value="Household">Household</option>
-                                <option value="Electronics">Electronics</option>
-                                <option value="Clothing">Clothing</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div>
-                            <label for="newProductPrice">Initial Price (৳):</label>
-                            <input type="number" id="newProductPrice" step="0.01" required>
-                        </div>
-                        <div>
-                            <label for="newProductBarcode">Barcode/SKU:</label>
-                            <input type="text" id="newProductBarcode" placeholder="Optional barcode">
-                        </div>
-                        <div>
-                            <label for="newProductMinStock">Minimum Stock Alert:</label>
-                            <input type="number" id="newProductMinStock" min="1" value="10">
-                        </div>
-                    </div>
-                    
-                    <button class="btn" onclick="addNewProduct()">Add New Product</button>
-                </div>
-
-                <!-- Products Table -->
-                <div class="table-container">
-                    <table id="stockTable">
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>Product Name</th>
-                                <th>Category</th>
-                                <th>Stock</th>
-                                <th>Price</th>
-                                <th>Value</th>
-                                <th>Status</th>
-                                <th>Barcode</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- History Tab -->
-            <div id="history" class="tab-content">
-                <h2>📋 Transaction History</h2>
-                
-                <div class="form-row">
-                    <div>
-                        <label for="dateFrom">From Date:</label>
-                        <input type="date" id="dateFrom">
-                    </div>
-                    <div>
-                        <label for="dateTo">To Date:</label>
-                        <input type="date" id="dateTo">
-                    </div>
-                    <div>
-                        <label for="typeFilter">Transaction Type:</label>
-                        <select id="typeFilter">
-                            <option value="">All Transactions</option>
-                            <option value="in">Stock IN</option>
-                            <option value="out">Stock OUT</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div style="margin-bottom: 20px;">
-                    <button class="btn btn-primary" onclick="filterTransactions()">Apply Filter</button>
-                    <button class="btn" onclick="exportToGoogleSheetsFormat('transactions')">📊 Export to Sheets</button>
-                    <button class="btn btn-warning" onclick="clearAllTransactions()">🗑️ Clear History</button>
-                </div>
-                
-                <div class="
+</html>
